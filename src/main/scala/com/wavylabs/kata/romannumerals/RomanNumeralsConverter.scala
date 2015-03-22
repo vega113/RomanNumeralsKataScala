@@ -1,5 +1,7 @@
 package com.wavylabs.kata.romannumerals
 
+import scala.annotation.tailrec
+
 
 /**
  * Created by vega on 3/19/15.
@@ -43,6 +45,7 @@ object RomanNumeralsConverter {
       combine.curried(b))(a))
   }
 
+  @tailrec
   private[romannumerals] def convertAcc(predicate: (AccArabicRoman) => Boolean,
                                         combine: (AccArabicRoman) => AccArabicRoman)
                                        (acc: AccArabicRoman): AccArabicRoman = {
