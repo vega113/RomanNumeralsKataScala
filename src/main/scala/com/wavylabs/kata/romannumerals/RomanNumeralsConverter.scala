@@ -14,6 +14,7 @@ object RomanNumeralsConverter {
     Numeral(4, "IV"),
     Numeral(5, "V"),
     Numeral(9, "IX"),
+    Numeral(10, "X"),
     Numeral(40, "XL"),
     Numeral(50, "L"),
     Numeral(90, "XC"),
@@ -27,31 +28,26 @@ object RomanNumeralsConverter {
   def romanToArabic(roman: String): Int = {
     foldArabicRoman((0, roman),
       (a, b) => b._2.startsWith(a.roman),
-      (a, b) => b._1 + a.arabic,
-      (a, b) => b._2.replaceFirst(a.roman, ""))._1
+      (a, b) => (b._1 + a.arabic, b._2.replaceFirst(a.roman, "")))._1
   }
 
   def arabicToRoman(arabic: Int): String = {
     foldArabicRoman((arabic, ""),
-      _.arabic <= _._1,
-      (a, b) => b._1 - a.arabic,
-      (a, b) => b._2 + a.roman)._2
+      (a, b) => b._1 >= a.arabic,
+      (a, b) => (b._1 - a.arabic, b._2 + a.roman))._2
   }
 
   private def foldArabicRoman(acc: AccArabicRoman, predicate: (Numeral, AccArabicRoman) => Boolean,
-                              arabicCombine: (Numeral, AccArabicRoman) => Int,
-                              romanCombine: (Numeral, AccArabicRoman) => String): AccArabicRoman = {
+                              combine: (Numeral, AccArabicRoman) => AccArabicRoman): AccArabicRoman = {
     numerals.foldLeft[AccArabicRoman](acc)((a, b) => convertAcc(predicate.curried(b),
-      arabicCombine.curried(b),
-      romanCombine.curried(b))(a))
+      combine.curried(b))(a))
   }
 
   private[romannumerals] def convertAcc(predicate: (AccArabicRoman) => Boolean,
-                                        arabicCombine: (AccArabicRoman) => Int,
-                                        romanCombine: (AccArabicRoman) => String)
+                                        combine: (AccArabicRoman) => AccArabicRoman)
                                        (acc: AccArabicRoman): AccArabicRoman = {
     if (predicate(acc)) {
-      convertAcc(predicate, arabicCombine, romanCombine)((arabicCombine(acc), romanCombine(acc)))
+      convertAcc(predicate, combine)((combine(acc)))
     } else {
       acc
     }

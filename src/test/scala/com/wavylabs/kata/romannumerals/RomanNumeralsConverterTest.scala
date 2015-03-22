@@ -1,7 +1,6 @@
 package com.wavylabs.kata.romannumerals
 
 import org.scalatest.FunSuite
-import RomanNumeralsConverter.RomanNumerals._
 
 /**
  * Created by vega on 3/19/15.
@@ -52,5 +51,4 @@ class RomanNumeralsConverterTest extends FunSuite {
   test("roman to arabic thirty one") {
     assert(31 == RomanNumeralsConverter.romanToArabic("XXXI"))
   }
-
 }
